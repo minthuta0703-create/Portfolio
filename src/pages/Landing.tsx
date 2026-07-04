@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router";
-import { ArrowUpRight, ArrowDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { ArrowUpRight } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Gear } from "../components/Gear";
 import { RoboticArm } from "../components/RoboticArm";
+import { ProjectsPoster, StoryPoster, NotebookPoster } from "../components/CategoryPosters";
 import { projects } from "../data/projects";
 import { concepts } from "../data/concepts";
 
@@ -16,33 +17,37 @@ interface Entry {
   category: string;
   route: string;
   blurb: string;
-  meta: string;
+  items: string[];
+  Poster: () => JSX.Element;
 }
 
 const entries: Entry[] = [
-  ...projects.map((p, i) => ({
-    id: p.id,
-    title: p.title,
-    category: `PROJECT ${String(i + 1).padStart(2, "0")}`,
-    route: `/projects/${p.id}`,
-    blurb: p.tagline,
-    meta: p.tags.join(" · "),
-  })),
+  {
+    id: "projects",
+    title: "Projects",
+    category: "01 — BUILDS",
+    route: "/projects",
+    blurb: "Builds taken from rough idea to something that runs — full case study inside each.",
+    items: projects.map((p) => p.title),
+    Poster: ProjectsPoster,
+  },
   {
     id: "story",
     title: "My Story",
-    category: "CHAPTERS",
+    category: "02 — CHAPTERS",
     route: "/story",
     blurb: "Myanmar → Bristol → Sydney. Six chapters, one per major shift.",
-    meta: "6 chapters",
+    items: ["Yangon", "Bristol", "Sydney"],
+    Poster: StoryPoster,
   },
   {
     id: "notebook",
     title: "Engineering Notebook",
-    category: "LIBRARY",
+    category: "03 — LIBRARY",
     route: "/notebook",
-    blurb: "Short explainers on the concepts I keep coming back to.",
-    meta: `${concepts.length} concepts`,
+    blurb: "Short explainers on the concepts I keep coming back to. One reel per idea.",
+    items: concepts.slice(0, 3).map((c) => c.title).concat(`+${concepts.length - 3} more`),
+    Poster: NotebookPoster,
   },
 ];
 
@@ -60,65 +65,10 @@ function useSydneyTime() {
   });
 }
 
-/** Per-entry preview rendered inside the central frame. */
-function FramePreview({ entry, index }: { entry: Entry; index: number }) {
-  if (entry.id === "story") {
-    return (
-      <div className="relative w-full h-full flex flex-col justify-center gap-3 p-8">
-        {["Myanmar", "Engineering in the UK", "University of Bristol", "Mechatronics at UTS", "Making content", "Now"].map(
-          (step, i) => (
-            <div key={step} className="flex items-center gap-3">
-              <span className="font-mono text-[9px] text-secondary w-5">{String(i + 1).padStart(2, "0")}</span>
-              <span className="h-px flex-1 bg-border" />
-              <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{step}</span>
-            </div>
-          ),
-        )}
-      </div>
-    );
-  }
-
-  if (entry.id === "notebook") {
-    return (
-      <div className="relative w-full h-full grid grid-cols-2 gap-2 p-6 content-center">
-        {concepts.map((c) => (
-          <div key={c.id} className="border border-border bg-background/60 px-2.5 py-2">
-            <div className="font-mono text-[8px] text-muted-foreground uppercase tracking-widest mb-0.5">{c.tag}</div>
-            <div className="font-heading text-[11px] font-bold">{c.title}</div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  // Project schematic placeholder
-  return (
-    <div className="relative w-full h-full flex items-center justify-center">
-      <span className="absolute top-4 left-4 font-mono text-[9px] text-muted-foreground/60 uppercase tracking-widest">
-        FIG. {String(index + 2).padStart(2, "0")} — SCHEMATIC
-      </span>
-      <span className="absolute top-4 right-4 font-mono text-[24px] text-border font-bold">
-        {String(index + 1).padStart(2, "0")}
-      </span>
-      <div className="w-28 h-28 border-2 border-border border-dashed rounded-full flex items-center justify-center relative">
-        <div className="absolute w-full h-px bg-primary/60 rotate-45" />
-        <div className="absolute w-full h-px bg-primary/60 -rotate-45" />
-        <div className="w-3 h-3 bg-secondary rounded-full z-10" />
-      </div>
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 w-1/2 flex flex-col items-center">
-        <div className="w-full h-px bg-foreground/25 relative">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-px h-2 bg-foreground/40" />
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-px h-2 bg-foreground/40" />
-        </div>
-        <span className="font-mono text-[9px] text-muted-foreground mt-1">450mm</span>
-      </div>
-    </div>
-  );
-}
-
 export function Landing() {
+  const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
-  const [vh, setVh] = useState(() => window.innerHeight);
+  const [vp, setVp] = useState(() => ({ h: window.innerHeight, w: window.innerWidth }));
   const ticking = useRef(false);
   const time = useSydneyTime();
 
@@ -131,7 +81,7 @@ export function Landing() {
         ticking.current = false;
       });
     };
-    const onResize = () => setVh(window.innerHeight);
+    const onResize = () => setVp({ h: window.innerHeight, w: window.innerWidth });
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     onScroll();
@@ -141,12 +91,45 @@ export function Landing() {
     };
   }, []);
 
-  const slides = entries.length + 1; // hero + entries
-  const active = Math.min(slides - 1, Math.max(0, Math.round(scrollY / vh)));
+  const vh = vp.h;
+  const isMobile = vp.w < 1024;
+  const slides = entries.length + 1; // hero + 3 categories
+  const exact = Math.min(slides - 1, Math.max(0, scrollY / vh));
+  const active = Math.round(exact);
   const entry = active > 0 ? entries[active - 1] : null;
-  const maxScroll = (slides - 1) * vh;
-  const progress = maxScroll > 0 ? Math.min(1, scrollY / maxScroll) : 0;
-  const gearRotation = useMemo(() => scrollY * 0.12, [scrollY]);
+  const progress = exact / (slides - 1);
+  const gearRotation = scrollY * 0.12;
+
+  // Filmstrip geometry: active card centred, next card peeking from below.
+  const cardH = Math.min(vh * (isMobile ? 0.5 : 0.58), 600);
+  const cardW = Math.min(cardH * 0.78, vp.w - 48);
+  const gap = vh * 0.1;
+  const stripY = -cardH / 2 - exact * (cardH + gap);
+
+  const goTo = (slide: number) =>
+    window.scrollTo({ top: slide * vh, behavior: "smooth" });
+
+  const cards = [
+    {
+      id: "hero",
+      render: () => (
+        <div className="relative w-full h-full">
+          <ImageWithFallback
+            src="/profile.svg"
+            alt="Min Thuta"
+            className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+          />
+          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 font-mono text-[9px] text-muted-foreground tracking-widest bg-background/80 px-2 py-0.5 whitespace-nowrap">
+            FIG. 01 — OPERATOR
+          </span>
+        </div>
+      ),
+    },
+    ...entries.map((e) => ({
+      id: e.id,
+      render: () => <e.Poster />,
+    })),
+  ];
 
   return (
     <div style={{ height: `${slides * 100}vh` }}>
@@ -177,10 +160,21 @@ export function Landing() {
           </div>
         </header>
 
+        {/* Mobile hero headline */}
+        <div
+          className="lg:hidden absolute top-[4.5rem] inset-x-0 z-20 text-center px-6 transition-opacity duration-300"
+          style={{ opacity: Math.max(0, 1 - exact * 1.6) }}
+        >
+          <div className="font-mono text-[10px] tracking-[0.25em] text-primary uppercase mb-1.5">
+            Mechatronics / Systems / Storytelling
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-gradient">Hi, I'm Min. 🇲🇲</h1>
+        </div>
+
         {/* Main stage */}
-        <div className="h-full grid lg:grid-cols-[300px_1fr_280px] items-center px-5 md:px-8 pt-16 pb-14 gap-6">
-          {/* Left rail — hero headline OR arm + category list */}
-          <div className="hidden lg:flex items-center min-w-0">
+        <div className="h-full grid lg:grid-cols-[300px_1fr_280px] px-5 md:px-8 gap-6">
+          {/* Left rail */}
+          <div className="hidden lg:flex items-center min-w-0 relative z-20">
             {active === 0 ? (
               <div key="hero-left" className="animate-in fade-in slide-in-from-left-4 duration-500">
                 <div className="font-mono text-[11px] tracking-[0.25em] text-primary uppercase mb-4">
@@ -198,14 +192,14 @@ export function Landing() {
                     const isActive = i === active - 1;
                     return (
                       <li key={e.id} style={{ height: ROW_H }} className="flex items-center">
-                        <Link
-                          to={e.route}
-                          className={`text-sm font-medium transition-all duration-300 hover:text-primary ${
+                        <button
+                          onClick={() => goTo(i + 1)}
+                          className={`text-sm font-medium transition-all duration-300 hover:text-primary text-left ${
                             isActive ? "text-foreground translate-x-1" : "text-muted-foreground/50"
                           }`}
                         >
                           {e.title}
-                        </Link>
+                        </button>
                       </li>
                     );
                   })}
@@ -214,73 +208,93 @@ export function Landing() {
             )}
           </div>
 
-          {/* Center frame */}
-          <div className="flex flex-col items-center justify-center min-w-0 gap-4">
-            {/* Mobile hero headline */}
-            {active === 0 && (
-              <div className="lg:hidden text-center animate-in fade-in duration-500">
-                <div className="font-mono text-[10px] tracking-[0.25em] text-primary uppercase mb-2">
-                  Mechatronics / Systems / Storytelling
-                </div>
-                <h1 className="text-4xl font-bold tracking-tight text-gradient">Hi, I'm Min. 🇲🇲</h1>
-              </div>
-            )}
+          {/* Centre filmstrip */}
+          <div className="relative min-w-0 h-full">
+            {/* Static viewfinder brackets around the active slot */}
+            <div
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-20"
+              style={{ width: cardW + 20, height: cardH + 20 }}
+            >
+              <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-foreground/70" />
+              <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-foreground/70" />
+              <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-foreground/70" />
+              <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-foreground/70" />
+            </div>
 
-            <div className="relative w-full max-w-[340px] md:max-w-[380px]">
-              {/* Corner brackets */}
-              <div className="absolute -top-2 -left-2 w-5 h-5 border-t-2 border-l-2 border-foreground/70 z-10" />
-              <div className="absolute -top-2 -right-2 w-5 h-5 border-t-2 border-r-2 border-foreground/70 z-10" />
-              <div className="absolute -bottom-2 -left-2 w-5 h-5 border-b-2 border-l-2 border-foreground/70 z-10" />
-              <div className="absolute -bottom-2 -right-2 w-5 h-5 border-b-2 border-r-2 border-foreground/70 z-10" />
-
-              <div className="aspect-[4/5] border border-border bg-card shadow-sm overflow-hidden relative">
-                <div className="blueprint-grid absolute inset-0 opacity-[0.5] [--grid-size:24px] pointer-events-none" />
-                {active === 0 ? (
-                  <div key="hero-frame" className="relative w-full h-full animate-in fade-in zoom-in-95 duration-500">
-                    <ImageWithFallback
-                      src="/profile.svg"
-                      alt="Min Thuta"
-                      className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                    />
-                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 font-mono text-[9px] text-muted-foreground tracking-widest bg-background/80 px-2 py-0.5">
-                      FIG. 01 — OPERATOR
-                    </span>
-                  </div>
-                ) : (
-                  <Link
-                    key={entry!.id}
-                    to={entry!.route}
-                    className="block relative w-full h-full animate-in fade-in zoom-in-95 duration-500 hover:bg-accent/40 transition-colors"
-                    aria-label={`Open ${entry!.title}`}
-                  >
-                    <FramePreview entry={entry!} index={active - 1} />
-                  </Link>
-                )}
+            {/* Strip — position driven directly by scroll */}
+            <div
+              className="absolute left-1/2 top-1/2 will-change-transform"
+              style={{ transform: `translate(-50%, ${stripY}px)` }}
+            >
+              <div className="flex flex-col items-center" style={{ gap }}>
+                {cards.map((card, i) => {
+                  const d = Math.min(1, Math.abs(i - exact));
+                  const isActiveCard = i === active;
+                  const linked = i > 0;
+                  const inner = (
+                    <div
+                      className="border border-border bg-card shadow-sm overflow-hidden relative"
+                      style={{
+                        width: cardW,
+                        height: cardH,
+                        opacity: 1 - 0.55 * d,
+                        filter: `grayscale(${d})`,
+                        transform: `scale(${1 - 0.05 * d})`,
+                      }}
+                    >
+                      <div className="blueprint-grid absolute inset-0 opacity-[0.5] [--grid-size:24px] pointer-events-none" />
+                      {card.render()}
+                    </div>
+                  );
+                  return linked ? (
+                    <a
+                      key={card.id}
+                      href={entries[i - 1].route}
+                      aria-label={isActiveCard ? `Open ${entries[i - 1].title}` : `Go to ${entries[i - 1].title}`}
+                      onClick={(ev) => {
+                        ev.preventDefault();
+                        if (isActiveCard) navigate(entries[i - 1].route);
+                        else goTo(i);
+                      }}
+                      className="block cursor-pointer"
+                    >
+                      {inner}
+                    </a>
+                  ) : (
+                    <div key={card.id}>{inner}</div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Caption under frame */}
-            <div key={`caption-${active}`} className="text-center animate-in fade-in slide-in-from-bottom-2 duration-500 max-w-md">
+            {/* Caption for the active slide */}
+            <div
+              key={`caption-${active}`}
+              className="absolute bottom-12 md:bottom-14 inset-x-0 text-center z-20 animate-in fade-in slide-in-from-bottom-2 duration-500 pointer-events-none"
+            >
               {active === 0 ? (
-                <p className="text-sm md:text-base text-muted-foreground leading-relaxed px-4">
+                <p className="inline-block text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto px-4 py-1 bg-background/75 backdrop-blur-sm">
                   Mechatronics student bridging the gap between the math and the metal.
                 </p>
               ) : (
-                <>
-                  <div className="font-mono text-[10px] tracking-[0.25em] text-primary uppercase mb-1.5">
-                    {entry!.category} — {String(active).padStart(2, "0")}/{String(entries.length).padStart(2, "0")}
+                <div className="inline-block px-5 py-2 bg-background/75 backdrop-blur-sm">
+                  <div className="font-mono text-[10px] tracking-[0.25em] text-primary uppercase mb-1">
+                    {entry!.category}
                   </div>
-                  <Link to={entry!.route} className="group inline-flex items-center gap-2 hover:text-primary transition-colors">
-                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight">{entry!.title}</h2>
-                    <ArrowUpRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <Link
+                    to={entry!.route}
+                    className="group pointer-events-auto inline-flex items-center gap-2 hover:text-primary transition-colors"
+                  >
+                    <h2 className="text-xl md:text-2xl font-bold tracking-tight">{entry!.title}</h2>
+                    <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </div>
 
-          {/* Right rail — hero intro OR entry meta */}
-          <div className="hidden lg:block min-w-0">
+          {/* Right rail */}
+          <div className="hidden lg:flex items-center min-w-0 relative z-20">
             {active === 0 ? (
               <div key="hero-right" className="animate-in fade-in slide-in-from-right-4 duration-500">
                 <p className="text-sm text-muted-foreground leading-relaxed mb-6">
@@ -294,10 +308,15 @@ export function Landing() {
                 </div>
               </div>
             ) : (
-              <div key={`meta-${entry!.id}`} className="animate-in fade-in slide-in-from-right-4 duration-500">
-                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-3 pb-3 border-b border-border">
-                  {entry!.meta}
-                </div>
+              <div key={`meta-${entry!.id}`} className="animate-in fade-in slide-in-from-right-4 duration-500 w-full">
+                <ul className="font-mono text-[11px] text-muted-foreground flex flex-col gap-2 mb-5 pb-5 border-b border-border">
+                  {entry!.items.map((item, i) => (
+                    <li key={item} className="flex items-baseline gap-2.5">
+                      <span className="text-[9px] text-primary">{String(i + 1).padStart(2, "0")}</span>
+                      <span className="uppercase tracking-wider">{item}</span>
+                    </li>
+                  ))}
+                </ul>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-5">{entry!.blurb}</p>
                 <Link
                   to={entry!.route}
@@ -311,7 +330,7 @@ export function Landing() {
         </div>
 
         {/* Bottom bar */}
-        <footer className="absolute bottom-0 inset-x-0 z-30 flex items-end justify-between px-5 md:px-8 pb-4">
+        <footer className="absolute bottom-0 inset-x-0 z-30 flex items-end justify-between px-5 md:px-8 pb-4 pointer-events-none">
           <div className="flex items-end gap-3 text-foreground/80">
             <div className="relative w-[72px] h-[46px]" aria-hidden>
               <Gear size={46} rotation={gearRotation} className="absolute left-0 bottom-0" />
@@ -321,17 +340,8 @@ export function Landing() {
               SYS.SCROLL {String(Math.round(progress * 100)).padStart(3, "0")}%
             </span>
           </div>
-
-          {active === 0 && (
-            <div className="hidden sm:flex flex-col items-center gap-1 text-muted-foreground animate-bounce pb-1">
-              <span className="font-mono text-[10px] uppercase tracking-widest">Scroll</span>
-              <ArrowDown className="w-3.5 h-3.5" />
-            </div>
-          )}
-
-          <span className="font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest pb-1 text-right">
-            33.88°S / 151.20°E<br className="sm:hidden" />
-            <span className="hidden sm:inline"> — </span>Engineering Without Lanes
+          <span className="hidden sm:block font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest pb-1 text-right">
+            33.88°S / 151.20°E — Engineering Without Lanes
           </span>
         </footer>
       </div>
