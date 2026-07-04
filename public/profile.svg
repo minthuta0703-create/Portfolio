@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
-  <rect width="400" height="400" fill="#1a212b"/>
-  <g stroke="#232c37" stroke-width="1">
+  <rect width="400" height="400" fill="#f1efe8"/>
+  <g stroke="#e5e2d8" stroke-width="1">
     <path d="M0 100h400M0 200h400M0 300h400M100 0v400M200 0v400M300 0v400"/>
   </g>
-  <circle cx="200" cy="150" r="60" fill="#232c37"/>
-  <path d="M90 400c0-70 50-115 110-115s110 45 110 115" fill="#232c37"/>
-  <text x="200" y="380" text-anchor="middle" font-family="monospace" font-size="14" fill="#97a1ad">[ REPLACE: public/profile.svg ]</text>
+  <circle cx="200" cy="150" r="60" fill="#e5e2d8"/>
+  <path d="M90 400c0-70 50-115 110-115s110 45 110 115" fill="#e5e2d8"/>
+  <text x="200" y="380" text-anchor="middle" font-family="monospace" font-size="14" fill="#5b6168">[ REPLACE: public/profile.svg ]</text>
 </svg>

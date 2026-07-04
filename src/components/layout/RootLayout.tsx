@@ -1,7 +1,13 @@
-import { Outlet, Link, useLocation } from "react-router";
+import { Outlet, NavLink, Link, useLocation } from "react-router";
 import { useEffect } from "react";
 
 const EMAIL = "minthuta0703@gmail.com";
+
+const nav = [
+  { to: "/projects", label: "Projects" },
+  { to: "/story", label: "Story" },
+  { to: "/notebook", label: "Notebook" },
+];
 
 export function RootLayout() {
   const { pathname } = useLocation();
@@ -11,44 +17,44 @@ export function RootLayout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-background font-sans text-foreground flex flex-col">
-      {/* Background blueprint grid pattern */}
+    <div className="min-h-screen bg-background font-sans text-foreground flex flex-col relative">
+      {/* Ambient gradient patches */}
+      <div className="glow-blue fixed inset-x-0 top-0 h-[70vh] pointer-events-none z-0" aria-hidden />
+      <div className="glow-amber fixed inset-0 pointer-events-none z-0" aria-hidden />
+      {/* Blueprint grid */}
       <div className="blueprint-grid fixed inset-0 pointer-events-none opacity-[0.35] z-0" />
-      {/* Soft radial glow behind the hero */}
-      <div
-        className="fixed inset-x-0 top-0 h-[60vh] pointer-events-none z-0"
-        aria-hidden
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 60% at 50% -10%, color-mix(in srgb, var(--primary) 12%, transparent), transparent)",
-        }}
-      />
 
-      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 md:px-6 h-16 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 bg-foreground rounded-sm flex items-center justify-center text-background font-mono font-bold text-lg group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/75 backdrop-blur-md">
+        <div className="container mx-auto px-4 md:px-6 h-16 flex justify-between items-center gap-4">
+          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-8 h-8 bg-foreground rounded-sm flex items-center justify-center text-background font-mono font-bold text-lg group-hover:bg-primary transition-colors">
               M
             </div>
             <span className="font-bold tracking-tight font-heading">Min Thuta</span>
-            <span className="hidden sm:inline font-mono text-[10px] text-muted-foreground uppercase tracking-widest border border-border px-1.5 py-0.5 ml-2">
-              MECHATRONICS
-            </span>
           </Link>
 
-          <nav className="flex items-center gap-6">
-            <Link
-              to="/"
-              className="hidden md:inline text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Home
-            </Link>
+          <nav className="flex items-center gap-1 sm:gap-2 text-sm">
+            {nav.map((item) => (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) =>
+                  [
+                    "px-2 sm:px-3 py-1.5 font-medium transition-colors",
+                    isActive
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-foreground",
+                  ].join(" ")
+                }
+              >
+                {item.label}
+              </NavLink>
+            ))}
             <a
               href={`mailto:${EMAIL}`}
-              className="text-sm font-medium font-mono text-muted-foreground hover:text-primary transition-colors"
+              className="hidden md:inline ml-2 text-sm font-medium font-mono text-muted-foreground hover:text-primary transition-colors"
             >
-              <span className="hidden sm:inline">{EMAIL}</span>
-              <span className="sm:hidden">Contact</span>
+              {EMAIL}
             </a>
           </nav>
         </div>
@@ -58,13 +64,13 @@ export function RootLayout() {
         <Outlet />
       </main>
 
-      <footer className="relative z-10 border-t border-border/60 mt-12">
+      <footer className="relative z-10 border-t border-border/60 mt-16">
         <div className="container mx-auto px-4 md:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground font-mono">
             © {new Date().getFullYear()} Min Thuta — Sydney, Australia
           </p>
           <p className="text-xs text-muted-foreground/60 font-mono uppercase tracking-widest">
-            33.88°S / 151.20°E — Engineering Without Lanes
+            Engineering Without Lanes
           </p>
         </div>
       </footer>

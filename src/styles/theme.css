@@ -1,36 +1,34 @@
 /*
- * Design tokens — "Engineering Without Lanes" v2
- * Dark, modern, sharp. Deep technical navy-black base, engineering-blue
- * primary, amber measurement highlights.
+ * Design tokens — "Engineering Without Lanes" v2.1
+ * Light, warm, editorial. Soft blue + amber gradient touches.
  */
 
 :root {
-  --background: #0b0f14;
-  --foreground: #e8eaed;
+  --background: #fbfaf7;
+  --foreground: #0f1216;
 
-  --card: #10151c;
-  --card-foreground: #e8eaed;
+  --card: #ffffff;
+  --card-foreground: #0f1216;
 
-  --muted: #1a212b;
-  --muted-foreground: #97a1ad;
+  --muted: #f1efe8;
+  --muted-foreground: #5b6168;
 
-  --border: #232c37;
+  --border: #e5e2d8;
   --input: transparent;
 
-  --primary: #3b93ff;
-  --primary-foreground: #06090d;
+  --primary: #0057d9;
+  --primary-foreground: #ffffff;
 
-  --secondary: #ffb000;
-  --secondary-foreground: #06090d;
+  --secondary: #f0a000;
+  --secondary-foreground: #0f1216;
 
-  /* Raised technical panel (thesis card, inverted blocks) */
-  --accent: #141b24;
-  --accent-foreground: #f2f4f6;
+  --accent: #eef4ff;
+  --accent-foreground: #0f1216;
 
-  --destructive: #ff4d6a;
-  --destructive-foreground: #0b0f14;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
 
-  --ring: #3b93ff;
+  --ring: #0057d9;
   --radius: 0.25rem;
 }
 
@@ -98,7 +96,6 @@
 }
 
 @utility blueprint-grid {
-  /* Blueprint-style grid background; override --grid-size for finer grids */
   --grid-size: 40px;
   background-image:
     linear-gradient(var(--border) 1px, transparent 1px),
@@ -106,7 +103,25 @@
   background-size: var(--grid-size) var(--grid-size);
 }
 
-/* Scroll-reveal: elements fade + rise once the useReveal hook flags them */
+/* Soft ambient gradient patches — used behind hero and section headers */
+@utility glow-blue {
+  background:
+    radial-gradient(60% 60% at 50% 0%, color-mix(in srgb, var(--primary) 10%, transparent), transparent 70%);
+}
+@utility glow-amber {
+  background:
+    radial-gradient(50% 50% at 90% 100%, color-mix(in srgb, var(--secondary) 14%, transparent), transparent 70%);
+}
+
+/* Gradient text accent for headlines */
+@utility text-gradient {
+  background: linear-gradient(120deg, var(--foreground) 0%, var(--foreground) 55%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Scroll-reveal */
 @utility reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -114,19 +129,27 @@
     opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
 @utility reveal-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
+/* Native <details> accordion animation */
+details.acc > summary {
+  list-style: none;
+  cursor: pointer;
+}
+details.acc > summary::-webkit-details-marker {
+  display: none;
+}
+details.acc[open] > summary .acc-chev {
+  transform: rotate(90deg);
+}
+details.acc .acc-chev {
+  transition: transform 0.25s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
 }
