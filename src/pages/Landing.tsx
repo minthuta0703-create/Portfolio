@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Gear } from "../components/Gear";
-import { RoboticArm } from "../components/RoboticArm";
+import { ArmNav } from "../components/ArmNav";
 import { ProjectsPoster, StoryPoster, NotebookPoster } from "../components/CategoryPosters";
 import { projects } from "../data/projects";
 import { concepts } from "../data/concepts";
 
 const EMAIL = "minthuta0703@gmail.com";
-const ROW_H = 48;
 
 interface Entry {
   id: string;
@@ -143,7 +142,7 @@ export function Landing() {
         <div className="glow-amber absolute inset-0 pointer-events-none" aria-hidden />
         <div className="blueprint-grid absolute inset-0 opacity-[0.35] pointer-events-none" />
 
-        {/* Mobile hero headline */}
+        {/* Mobile hero headline — crossfades into the gantry nav on scroll */}
         <div
           className="lg:hidden absolute top-8 inset-x-0 z-20 text-center px-6 transition-opacity duration-300"
           style={{ opacity: Math.max(0, 1 - exact * 1.6), pointerEvents: exact > 0.3 ? "none" : "auto" }}
@@ -152,6 +151,27 @@ export function Landing() {
             Mechatronics / Systems / Storytelling
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-gradient">Hi, I'm Min. 🇲🇲</h1>
+        </div>
+
+        {/* Mobile/tablet gantry nav — the arm rides in once the hero leaves */}
+        <div
+          className="lg:hidden absolute top-5 inset-x-0 z-20 flex justify-center transition-opacity duration-300"
+          style={{
+            opacity: Math.max(0, Math.min(1, exact * 1.6 - 0.5)),
+            pointerEvents: exact > 0.7 ? "auto" : "none",
+          }}
+        >
+          <div className="bg-background/80 backdrop-blur-sm border border-border px-3 pt-2 pb-1">
+            <ArmNav
+              orientation="horizontal"
+              items={entries.map((e, i) => ({
+                label: e.id === "notebook" ? "Notebook" : e.id === "story" ? "Story" : "Projects",
+                active: i === active - 1,
+                onSelect: () => goTo(i + 1),
+              }))}
+              parked={active === 0}
+            />
+          </div>
         </div>
 
         {/* Main stage */}
@@ -168,25 +188,14 @@ export function Landing() {
                 </h1>
               </div>
             ) : (
-              <div key="list-left" className="flex items-center gap-1 animate-in fade-in duration-500">
-                <RoboticArm targetIndex={active - 1} rows={entries.length} rowHeight={ROW_H} />
-                <ul>
-                  {entries.map((e, i) => {
-                    const isActive = i === active - 1;
-                    return (
-                      <li key={e.id} style={{ height: ROW_H }} className="flex items-center">
-                        <button
-                          onClick={() => goTo(i + 1)}
-                          className={`text-sm font-medium transition-all duration-300 hover:text-primary text-left ${
-                            isActive ? "text-foreground translate-x-1" : "text-muted-foreground/50"
-                          }`}
-                        >
-                          {e.title}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
+              <div key="list-left" className="animate-in fade-in duration-500">
+                <ArmNav
+                  items={entries.map((e, i) => ({
+                    label: e.title,
+                    active: i === active - 1,
+                    onSelect: () => goTo(i + 1),
+                  }))}
+                />
               </div>
             )}
           </div>
