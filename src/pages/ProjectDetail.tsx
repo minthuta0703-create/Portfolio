@@ -40,7 +40,7 @@ export function ProjectDetail() {
               <ChevronRight className="w-3 h-3" />
               <span>Control</span>
               <ChevronRight className="w-3 h-3" />
-              <span className="text-secondary-foreground font-bold border border-border px-2 py-0.5 bg-secondary/10">
+              <span className="text-primary font-bold border border-primary/40 px-2 py-0.5 bg-primary/10">
                 COMPLETED
               </span>
             </div>
@@ -55,13 +55,13 @@ export function ProjectDetail() {
             <div className="flex flex-wrap gap-4 mt-8 pt-6 border-t border-border border-dashed">
               <a
                 href="#"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border text-sm font-medium transition-all duration-300 hover:border-primary/50 hover:-translate-y-0.5"
               >
                 <Github className="w-4 h-4" /> Source Code
               </a>
               <a
                 href="#"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border text-sm font-medium hover:bg-accent hover:text-accent-foreground transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-card border border-border text-sm font-medium transition-all duration-300 hover:border-primary/50 hover:-translate-y-0.5"
               >
                 <ExternalLink className="w-4 h-4" /> Video Demo
               </a>
@@ -69,7 +69,7 @@ export function ProjectDetail() {
           </header>
 
           <div className="max-w-none text-foreground">
-            <h2 id="project-overview" className="text-2xl font-bold mt-12 mb-4 flex items-center gap-3">
+            <h2 id="project-overview" className="text-2xl font-bold mt-12 mb-4 scroll-mt-24 flex items-center gap-3">
               <span className="w-4 h-4 bg-primary inline-block" />
               Project Overview
             </h2>
@@ -102,7 +102,7 @@ export function ProjectDetail() {
               </div>
             </div>
 
-            <h2 id="system-architecture" className="text-2xl font-bold mt-12 mb-4 flex items-center gap-3">
+            <h2 id="system-architecture" className="text-2xl font-bold mt-12 mb-4 scroll-mt-24 flex items-center gap-3">
               <span className="w-4 h-4 bg-primary inline-block" />
               System Architecture
             </h2>
@@ -121,7 +121,7 @@ export function ProjectDetail() {
               </li>
             </ul>
 
-            <h2 id="what-failed" className="text-2xl font-bold mt-12 mb-4 flex items-center gap-3 text-destructive">
+            <h2 id="what-failed" className="text-2xl font-bold mt-12 mb-4 scroll-mt-24 flex items-center gap-3 text-destructive">
               <span className="w-4 h-4 bg-destructive inline-block" />
               What Failed
             </h2>
@@ -131,7 +131,7 @@ export function ProjectDetail() {
               violently at the setpoint.
             </p>
 
-            <h2 id="what-i-learned" className="text-2xl font-bold mt-12 mb-4 flex items-center gap-3">
+            <h2 id="what-i-learned" className="text-2xl font-bold mt-12 mb-4 scroll-mt-24 flex items-center gap-3">
               <span className="w-4 h-4 bg-secondary inline-block" />
               What I Learned
             </h2>

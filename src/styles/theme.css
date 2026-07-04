@@ -1,37 +1,36 @@
 /*
- * Design tokens — "Engineering Without Lanes"
- * Palette from the Figma design brief:
- *   warm off-white background, graphite text, engineering-blue accent,
- *   amber measurement highlights, dark technical sections.
+ * Design tokens — "Engineering Without Lanes" v2
+ * Dark, modern, sharp. Deep technical navy-black base, engineering-blue
+ * primary, amber measurement highlights.
  */
 
 :root {
-  --background: #f7f5ef;
-  --foreground: #111315;
+  --background: #0b0f14;
+  --foreground: #e8eaed;
 
-  --card: #ffffff;
-  --card-foreground: #111315;
+  --card: #10151c;
+  --card-foreground: #e8eaed;
 
-  --muted: #eceae2;
-  --muted-foreground: #5b6168;
+  --muted: #1a212b;
+  --muted-foreground: #97a1ad;
 
-  --border: #d9dee3;
+  --border: #232c37;
   --input: transparent;
 
-  --primary: #0077ff;
-  --primary-foreground: #ffffff;
+  --primary: #3b93ff;
+  --primary-foreground: #06090d;
 
   --secondary: #ffb000;
-  --secondary-foreground: #111315;
+  --secondary-foreground: #06090d;
 
-  /* Dark technical section (thesis card, inverted blocks) */
-  --accent: #0b0f14;
-  --accent-foreground: #f7f5ef;
+  /* Raised technical panel (thesis card, inverted blocks) */
+  --accent: #141b24;
+  --accent-foreground: #f2f4f6;
 
-  --destructive: #d4183d;
-  --destructive-foreground: #ffffff;
+  --destructive: #ff4d6a;
+  --destructive-foreground: #0b0f14;
 
-  --ring: #0077ff;
+  --ring: #3b93ff;
   --radius: 0.25rem;
 }
 
@@ -68,6 +67,10 @@
     border-color: var(--border);
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
@@ -80,6 +83,17 @@
   h3,
   h4 {
     font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
@@ -90,4 +104,29 @@
     linear-gradient(var(--border) 1px, transparent 1px),
     linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: var(--grid-size) var(--grid-size);
+}
+
+/* Scroll-reveal: elements fade + rise once the useReveal hook flags them */
+@utility reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
