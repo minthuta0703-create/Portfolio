@@ -20,7 +20,7 @@ export function ConceptDetail() {
   }
 
   return (
-    <div className="container mx-auto px-4 md:px-6 py-8 md:py-16 max-w-3xl">
+    <div className="container mx-auto px-4 md:px-6 pt-20 pb-8 md:py-16 max-w-3xl">
       <Link
         to="/notebook"
         className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary mb-8 transition-colors"

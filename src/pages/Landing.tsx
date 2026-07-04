@@ -129,10 +129,12 @@ export function Landing() {
   ];
 
   return (
-    <div style={{ height: `${slides * 100}vh` }}>
+    // Heights in px from measured innerHeight so slide boundaries, snap
+    // targets and the strip math all agree on mobile dynamic viewports.
+    <div style={{ height: slides * vh }}>
       {/* Invisible snap targets — one per slide */}
       {Array.from({ length: slides }, (_, i) => (
-        <div key={i} className="h-screen" style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }} />
+        <div key={i} style={{ height: vh, scrollSnapAlign: "start", scrollSnapStop: "always" }} />
       ))}
 
       <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
@@ -251,7 +253,7 @@ export function Landing() {
             {/* Caption for the active slide */}
             <div
               key={`caption-${active}`}
-              className="absolute bottom-12 md:bottom-14 inset-x-0 text-center z-20 animate-in fade-in slide-in-from-bottom-2 duration-500 pointer-events-none"
+              className="absolute bottom-[4.5rem] md:bottom-14 inset-x-0 text-center z-20 animate-in fade-in slide-in-from-bottom-2 duration-500 pointer-events-none px-16 md:px-0"
             >
               {active === 0 ? (
                 <p className="inline-block text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto px-4 py-1 bg-background/75 backdrop-blur-sm">
@@ -317,7 +319,7 @@ export function Landing() {
               <Gear size={46} rotation={gearRotation} className="absolute left-0 bottom-0" />
               <Gear size={32} rotation={-gearRotation * (46 / 32) + 18} teeth={8} className="absolute left-[38px] bottom-[22px]" />
             </div>
-            <span className="font-mono text-[10px] text-muted-foreground uppercase tracking-widest pb-1">
+            <span className="hidden sm:inline font-mono text-[10px] text-muted-foreground uppercase tracking-widest pb-1">
               SYS.SCROLL {String(Math.round(progress * 100)).padStart(3, "0")}%
             </span>
           </div>
