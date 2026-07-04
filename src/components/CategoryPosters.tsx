@@ -73,48 +73,56 @@ export function ProjectsPoster() {
 export function StoryPoster() {
   return (
     <svg viewBox="0 0 320 400" className="w-full h-full" preserveAspectRatio="xMidYMid slice" aria-hidden>
-      <text x={22} y={96} fontSize={88} fontFamily={heading} fontWeight={700} fill="none" stroke={faint} strokeWidth={1.5}>
-        02
+      {/* Book spine */}
+      <rect x={0} y={0} width={14} height={400} fill={ink} />
+      <line x1={7} y1={10} x2={7} y2={390} stroke="var(--card)" strokeWidth={0.75} strokeDasharray="2 4" opacity={0.5} />
+
+      {/* Cover frame — double rule */}
+      <rect x={28} y={24} width={268} height={352} fill="none" stroke={ink} strokeWidth={1.5} />
+      <rect x={36} y={32} width={252} height={336} fill="none" stroke={faint} strokeWidth={1} />
+
+      {/* Corner protectors */}
+      <path d="M 28 24 L 52 24 L 28 48 Z" fill={ink} />
+      <path d="M 296 24 L 272 24 L 296 48 Z" fill={ink} />
+      <path d="M 28 376 L 52 376 L 28 352 Z" fill={ink} />
+      <path d="M 296 376 L 272 376 L 296 352 Z" fill={ink} />
+
+      {/* Series label */}
+      <text x={162} y={72} fontSize={10} fontFamily={mono} fill={dim} letterSpacing={3} textAnchor="middle">
+        FIELD LOG — VOL. 02
+      </text>
+      <line x1={100} y1={86} x2={224} y2={86} stroke={dim} strokeWidth={1} />
+
+      {/* Title */}
+      <text x={162} y={158} fontSize={46} fontFamily={heading} fontWeight={700} fill={ink} textAnchor="middle" letterSpacing={1}>
+        MY
+      </text>
+      <text x={162} y={206} fontSize={46} fontFamily={heading} fontWeight={700} fill={ink} textAnchor="middle" letterSpacing={1}>
+        STORY
       </text>
 
-      {/* Route */}
-      <path
-        d="M 58 336 C 130 310 96 240 165 216 S 244 130 262 84"
-        fill="none"
-        stroke={dim}
-        strokeWidth={1.2}
-        strokeDasharray="5 6"
-      />
+      {/* Subtitle */}
+      <line x1={100} y1={230} x2={224} y2={230} stroke={dim} strokeWidth={1} />
+      <text x={162} y={250} fontSize={10} fontFamily={mono} fill={dim} letterSpacing={3} textAnchor="middle">
+        SIX CHAPTERS
+      </text>
 
-      {/* Waypoints */}
-      {[
-        { x: 58, y: 336, code: "MYN", place: "YANGON", anchor: "start", lx: 74, ly: 340 },
-        { x: 165, y: 216, code: "GBR", place: "BRISTOL", anchor: "start", lx: 181, ly: 220 },
-        { x: 262, y: 84, code: "AUS", place: "SYDNEY", anchor: "end", lx: 246, ly: 88 },
-      ].map((p) => (
-        <g key={p.code}>
-          <circle cx={p.x} cy={p.y} r={10} fill="none" stroke={amber} strokeWidth={1.5} />
-          <circle cx={p.x} cy={p.y} r={3.5} fill={amber} />
-          <text x={p.lx} y={p.ly - 4} fontSize={11} fontFamily={mono} fontWeight={600} fill={ink} textAnchor={p.anchor as "start" | "end"}>
-            {p.code}
-          </text>
-          <text x={p.lx} y={p.ly + 8} fontSize={8.5} fontFamily={mono} fill={dim} textAnchor={p.anchor as "start" | "end"}>
-            {p.place}
-          </text>
-        </g>
-      ))}
-
-      {/* Heading marker on the route */}
-      <g transform="translate(122 253) rotate(-35)">
-        <path d="M 0 -7 L 12 0 L 0 7 L 3 0 Z" fill={ink} />
+      {/* Gear emblem */}
+      <g transform="translate(162 302)">
+        {Array.from({ length: 8 }, (_, i) => (
+          <rect key={i} x={-2.5} y={-21} width={5} height={7} fill={amber} transform={`rotate(${i * 45})`} />
+        ))}
+        <circle r={15} fill="none" stroke={amber} strokeWidth={2} />
+        <circle r={5} fill="none" stroke={amber} strokeWidth={1.5} />
       </g>
 
-      <text x={22} y={130} fontSize={10} fontFamily={mono} fill={dim} letterSpacing={2}>
-        FLIGHT LOG — 3 COUNTRIES / 6 CHAPTERS
+      {/* Author */}
+      <text x={162} y={352} fontSize={11} fontFamily={mono} fontWeight={600} fill={ink} letterSpacing={3} textAnchor="middle">
+        MIN THUTA
       </text>
-      <text x={298} y={384} fontSize={10} fontFamily={mono} fill={dim} textAnchor="end">
-        DIST ~18,400 km
-      </text>
+
+      {/* Elastic band */}
+      <rect x={262} y={0} width={7} height={400} fill={amber} opacity={0.75} />
     </svg>
   );
 }

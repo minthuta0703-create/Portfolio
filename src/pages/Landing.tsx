@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowUpRight } from "lucide-react";
-import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Gear } from "../components/Gear";
 import { RoboticArm } from "../components/RoboticArm";
 import { ProjectsPoster, StoryPoster, NotebookPoster } from "../components/CategoryPosters";
@@ -36,8 +35,8 @@ const entries: Entry[] = [
     title: "My Story",
     category: "02 — CHAPTERS",
     route: "/story",
-    blurb: "Myanmar → Bristol → Sydney. Six chapters, one per major shift.",
-    items: ["Yangon", "Bristol", "Sydney"],
+    blurb: "Six chapters on how I ended up building, teaching, and filming engineering.",
+    items: ["Where it started", "What shaped it", "Where it's going"],
     Poster: StoryPoster,
   },
   {
@@ -51,26 +50,11 @@ const entries: Entry[] = [
   },
 ];
 
-function useSydneyTime() {
-  const [now, setNow] = useState(() => new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 30_000);
-    return () => clearInterval(t);
-  }, []);
-  return now.toLocaleTimeString("en-AU", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "Australia/Sydney",
-  });
-}
-
 export function Landing() {
   const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
   const [vp, setVp] = useState(() => ({ h: window.innerHeight, w: window.innerWidth }));
   const ticking = useRef(false);
-  const time = useSydneyTime();
 
   useEffect(() => {
     const onScroll = () => {
@@ -88,6 +72,15 @@ export function Landing() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  // Snap the document scroll to whole slides while the deck is mounted.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.scrollSnapType = "y mandatory";
+    return () => {
+      root.style.scrollSnapType = "";
     };
   }, []);
 
@@ -113,11 +106,15 @@ export function Landing() {
     {
       id: "hero",
       render: () => (
-        <div className="relative w-full h-full">
-          <ImageWithFallback
-            src="/profile.svg"
+        <div className="relative w-full h-full group/photo">
+          <img
+            src="/profile.jpg"
             alt="Min Thuta"
-            className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = "/profile.svg";
+            }}
+            className="w-full h-full object-cover object-[60%_30%] grayscale group-hover/photo:grayscale-0 transition-all duration-700"
           />
           <span className="absolute bottom-3 left-1/2 -translate-x-1/2 font-mono text-[9px] text-muted-foreground tracking-widest bg-background/80 px-2 py-0.5 whitespace-nowrap">
             FIG. 01 — OPERATOR
@@ -133,37 +130,21 @@ export function Landing() {
 
   return (
     <div style={{ height: `${slides * 100}vh` }}>
-      <div className="sticky top-0 h-screen overflow-hidden bg-background text-foreground">
+      {/* Invisible snap targets — one per slide */}
+      {Array.from({ length: slides }, (_, i) => (
+        <div key={i} className="h-screen" style={{ scrollSnapAlign: "start", scrollSnapStop: "always" }} />
+      ))}
+
+      <div className="fixed inset-0 overflow-hidden bg-background text-foreground">
         {/* Backdrop */}
         <div className="glow-blue absolute inset-x-0 top-0 h-[70vh] pointer-events-none" aria-hidden />
         <div className="glow-amber absolute inset-0 pointer-events-none" aria-hidden />
         <div className="blueprint-grid absolute inset-0 opacity-[0.35] pointer-events-none" />
 
-        {/* Top bar */}
-        <header className="absolute top-0 inset-x-0 z-30 flex items-center justify-between px-5 md:px-8 h-16">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 bg-foreground rounded-sm flex items-center justify-center text-background font-mono font-bold text-lg group-hover:bg-primary transition-colors">
-              M
-            </div>
-            <span className="font-bold tracking-tight font-heading">Min Thuta</span>
-          </Link>
-          <div className="flex items-center gap-5 text-sm">
-            <nav className="hidden md:flex items-center gap-5">
-              <Link to="/projects" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Projects</Link>
-              <Link to="/story" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Story</Link>
-              <Link to="/notebook" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Notebook</Link>
-            </nav>
-            <span className="hidden sm:inline font-mono text-xs text-muted-foreground">SYD {time}</span>
-            <a href={`mailto:${EMAIL}`} className="font-medium text-muted-foreground hover:text-primary transition-colors">
-              Contact
-            </a>
-          </div>
-        </header>
-
         {/* Mobile hero headline */}
         <div
-          className="lg:hidden absolute top-[4.5rem] inset-x-0 z-20 text-center px-6 transition-opacity duration-300"
-          style={{ opacity: Math.max(0, 1 - exact * 1.6) }}
+          className="lg:hidden absolute top-8 inset-x-0 z-20 text-center px-6 transition-opacity duration-300"
+          style={{ opacity: Math.max(0, 1 - exact * 1.6), pointerEvents: exact > 0.3 ? "none" : "auto" }}
         >
           <div className="font-mono text-[10px] tracking-[0.25em] text-primary uppercase mb-1.5">
             Mechatronics / Systems / Storytelling
@@ -340,9 +321,12 @@ export function Landing() {
               SYS.SCROLL {String(Math.round(progress * 100)).padStart(3, "0")}%
             </span>
           </div>
-          <span className="hidden sm:block font-mono text-[10px] text-muted-foreground/70 uppercase tracking-widest pb-1 text-right">
-            33.88°S / 151.20°E — Engineering Without Lanes
-          </span>
+          <a
+            href={`mailto:${EMAIL}`}
+            className="pointer-events-auto font-mono text-[11px] text-muted-foreground hover:text-primary transition-colors pb-1"
+          >
+            {EMAIL}
+          </a>
         </footer>
       </div>
     </div>

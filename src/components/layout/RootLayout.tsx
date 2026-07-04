@@ -1,13 +1,8 @@
-import { Outlet, NavLink, Link, useLocation } from "react-router";
+import { Outlet, Link, useLocation } from "react-router";
 import { useEffect } from "react";
+import { ArrowLeft } from "lucide-react";
 
 const EMAIL = "minthuta0703@gmail.com";
-
-const nav = [
-  { to: "/projects", label: "Projects" },
-  { to: "/story", label: "Story" },
-  { to: "/notebook", label: "Notebook" },
-];
 
 export function RootLayout() {
   const { pathname } = useLocation();
@@ -24,41 +19,14 @@ export function RootLayout() {
       {/* Blueprint grid */}
       <div className="blueprint-grid fixed inset-0 pointer-events-none opacity-[0.35] z-0" />
 
-      <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/75 backdrop-blur-md">
-        <div className="container mx-auto px-4 md:px-6 h-16 flex justify-between items-center gap-4">
-          <Link to="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-8 h-8 bg-foreground rounded-sm flex items-center justify-center text-background font-mono font-bold text-lg group-hover:bg-primary transition-colors">
-              M
-            </div>
-            <span className="font-bold tracking-tight font-heading">Min Thuta</span>
-          </Link>
-
-          <nav className="flex items-center gap-1 sm:gap-2 text-sm">
-            {nav.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  [
-                    "px-2 sm:px-3 py-1.5 font-medium transition-colors",
-                    isActive
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground",
-                  ].join(" ")
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-            <a
-              href={`mailto:${EMAIL}`}
-              className="hidden md:inline ml-2 text-sm font-medium font-mono text-muted-foreground hover:text-primary transition-colors"
-            >
-              {EMAIL}
-            </a>
-          </nav>
-        </div>
-      </header>
+      {/* Floating back-out button — returns to the landing deck */}
+      <Link
+        to="/"
+        aria-label="Back to home"
+        className="fixed top-5 left-5 z-50 inline-flex items-center gap-2 h-10 px-4 bg-card/90 backdrop-blur-sm border border-border font-mono text-xs uppercase tracking-widest text-muted-foreground transition-all duration-300 hover:text-foreground hover:border-primary/50 hover:-translate-x-0.5"
+      >
+        <ArrowLeft className="w-3.5 h-3.5" /> Back
+      </Link>
 
       <main className="relative z-10 flex-1">
         <Outlet />
@@ -69,9 +37,12 @@ export function RootLayout() {
           <p className="text-xs text-muted-foreground font-mono">
             © {new Date().getFullYear()} Min Thuta — Sydney, Australia
           </p>
-          <p className="text-xs text-muted-foreground/60 font-mono uppercase tracking-widest">
-            Engineering Without Lanes
-          </p>
+          <a
+            href={`mailto:${EMAIL}`}
+            className="text-xs font-mono text-muted-foreground hover:text-primary transition-colors"
+          >
+            {EMAIL}
+          </a>
         </div>
       </footer>
     </div>
