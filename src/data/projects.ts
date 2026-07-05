@@ -4,6 +4,8 @@ export interface Project {
   tagline: string;
   status: "COMPLETED" | "IN PROGRESS" | "PROTOTYPING";
   tags: string[];
+  /** Instagram reel/post URL — shown on the project page when set. */
+  reelUrl?: string;
 }
 
 export const projects: Project[] = [
@@ -29,6 +31,19 @@ export const projects: Project[] = [
     tags: ["Mechanical", "Arduino", "Python"],
   },
 ];
+
+/** The nine-section case-study template shared by every project page. */
+export const projectSections = [
+  "Overview",
+  "Why I Built This",
+  "How It Works",
+  "The Build",
+  "Testing & Results",
+  "What Went Wrong",
+  "What I Learned",
+  "Final Outcome",
+  "Project Files",
+] as const;
 
 export const statusStyles: Record<Project["status"], string> = {
   COMPLETED: "border-primary/40 text-primary bg-primary/10",

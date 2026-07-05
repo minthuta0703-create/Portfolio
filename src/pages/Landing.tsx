@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Gear } from "../components/Gear";
 import { ArmNav } from "../components/ArmNav";
@@ -215,16 +216,22 @@ export function Landing() {
 
           <div className="grid md:grid-cols-3 gap-4">
             {projects.map((project) => (
-              <div
+              <Link
+                to={`/projects/${project.id}`}
                 key={project.id}
-                className="flex flex-col p-5 bg-card border border-border transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40"
+                className="group flex flex-col p-5 bg-card border border-border transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40"
               >
-                <span
-                  className={`self-start font-mono text-[10px] uppercase font-bold px-2 py-0.5 border mb-4 ${statusStyles[project.status]}`}
-                >
-                  {project.status}
-                </span>
-                <h3 className="font-heading text-lg font-bold mb-2">{project.title}</h3>
+                <div className="flex items-start justify-between mb-4">
+                  <span
+                    className={`font-mono text-[10px] uppercase font-bold px-2 py-0.5 border ${statusStyles[project.status]}`}
+                  >
+                    {project.status}
+                  </span>
+                  <ArrowUpRight className="w-4 h-4 text-muted-foreground transition-all duration-300 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </div>
+                <h3 className="font-heading text-lg font-bold mb-2 group-hover:text-primary transition-colors">
+                  {project.title}
+                </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1">
                   {project.tagline}
                 </p>
@@ -238,12 +245,12 @@ export function Landing() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
           <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-6">
-            Full build reels — coming to Instagram
+            Open a project for the build log — reels coming to Instagram
           </p>
         </div>
       </section>
@@ -298,16 +305,22 @@ export function Landing() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {concepts.map((concept) => (
-              <div
+              <Link
+                to={`/notebook/${concept.id}`}
                 key={concept.id}
-                className="p-4 bg-card border border-border transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40"
+                className="group p-4 bg-card border border-border transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40"
               >
-                <div className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest mb-2">
-                  {concept.tag}
+                <div className="flex items-start justify-between mb-2">
+                  <div className="font-mono text-[9px] text-muted-foreground uppercase tracking-widest">
+                    {concept.tag}
+                  </div>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-primary transition-colors" />
                 </div>
-                <div className="font-heading font-bold text-sm mb-1">{concept.title}</div>
+                <div className="font-heading font-bold text-sm mb-1 group-hover:text-primary transition-colors">
+                  {concept.title}
+                </div>
                 <div className="text-xs text-muted-foreground leading-relaxed">{concept.hook}</div>
-              </div>
+              </Link>
             ))}
           </div>
 

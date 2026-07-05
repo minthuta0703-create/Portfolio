@@ -3,7 +3,18 @@ export interface Concept {
   title: string;
   tag: string;
   hook: string;
+  /** Instagram reel URL — embedded on the concept page when set. */
+  reelUrl?: string;
 }
+
+/** Short deeper-dive sections on every concept page — the "read more
+ *  after the 30s reel" layer, not a textbook chapter. */
+export const notebookSections = [
+  "The intuition",
+  "The maths",
+  "Where you meet it",
+  "Common mistakes",
+] as const;
 
 export const concepts: Concept[] = [
   {
