@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Gear } from "../components/Gear";
 import { ArmNav } from "../components/ArmNav";
@@ -32,6 +32,7 @@ const hashTargets: Record<string, number> = {
 
 export function Landing() {
   const { hash } = useLocation();
+  const navigate = useNavigate();
   const [scrollY, setScrollY] = useState(0);
   const [vp, setVp] = useState(() => ({ h: window.innerHeight, w: window.innerWidth }));
   const [active, setActive] = useState(0); // 0 = hero, 1..3 = sections
@@ -51,6 +52,15 @@ export function Landing() {
       sectionRefs.current[target]?.scrollIntoView({ behavior: "instant", block: "start" });
     }
   }, [hash]);
+
+  // Then strip the hash from the address bar (via the router, which owns
+  // the URL) — otherwise reloading or re-opening the saved link lands
+  // mid-page instead of on the hero.
+  useEffect(() => {
+    if (hashTargets[hash] != null) {
+      navigate("/", { replace: true });
+    }
+  }, [hash, navigate]);
 
   useEffect(() => {
     const measure = () => {
