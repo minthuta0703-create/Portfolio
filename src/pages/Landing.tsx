@@ -108,9 +108,13 @@ export function Landing() {
       <div className="glow-amber fixed inset-0 pointer-events-none" aria-hidden />
       <div className="blueprint-grid fixed inset-0 pointer-events-none opacity-[0.35]" />
 
-      {/* Wall-mounted arm nav — desktop */}
-      <div className="hidden lg:block fixed left-6 top-1/2 -translate-y-1/2 z-40">
-        <ArmNav items={navItems} parked={active === 0} />
+      {/* Wall-mounted arm nav — desktop; hidden on the hero so it never
+          overlaps the headline, rides in on the first scroll */}
+      <div
+        className="hidden lg:block fixed left-6 top-1/2 -translate-y-1/2 z-40 transition-opacity duration-500"
+        style={{ opacity: active > 0 ? 1 : 0, pointerEvents: active > 0 ? "auto" : "none" }}
+      >
+        <ArmNav items={navItems} />
       </div>
 
       {/* Gantry arm nav — mobile/tablet, rides in after the hero */}
@@ -153,8 +157,14 @@ export function Landing() {
             <div className="font-mono text-[11px] tracking-[0.25em] text-primary uppercase mb-4">
               Mechatronics / Systems / Storytelling
             </div>
-            <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.05] text-gradient">
-              Hi, I'm Min. 🇲🇲
+            {/* Flag lives outside the gradient span — background-clip:text
+                turns colour emoji into a dark silhouette */}
+            <h1 className="text-4xl md:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.05]">
+              <span className="text-gradient">
+                Hi, I'm
+                <br className="hidden lg:block" /> Min.
+              </span>{" "}
+              🇲🇲
             </h1>
           </div>
 
@@ -173,7 +183,7 @@ export function Landing() {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = "/profile.svg";
                   }}
-                  className="w-full h-full object-cover object-[60%_30%] grayscale group-hover/photo:grayscale-0 transition-all duration-700"
+                  className="w-full h-full object-cover object-[55%_45%] grayscale group-hover/photo:grayscale-0 transition-all duration-700"
                 />
                 <span className="absolute bottom-3 left-1/2 -translate-x-1/2 font-mono text-[9px] text-muted-foreground tracking-widest bg-background/80 px-2 py-0.5 whitespace-nowrap">
                   FIG. 01 — OPERATOR
