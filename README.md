@@ -1,8 +1,10 @@
 # Min Thuta — Portfolio
 
-Personal portfolio site ("Engineering Without Lanes") — React + Vite + Tailwind CSS v4 + React Router.
+Single-page portfolio ("Engineering Without Lanes") — React + Vite + Tailwind CSS v4.
 
-Originally exported from Figma Make, then cleaned up as a working baseline.
+One page, four full-screen sections: Hero → Projects → Story → Engineering Notebook.
+Snap-scrolling on desktop, free scroll on mobile. Signature robotic-arm navigation
+(wall-mounted IK arm on desktop, sliding gantry on mobile) plus scroll-driven gears.
 
 ## Run
 
@@ -14,32 +16,27 @@ npm run build    # production build to dist/
 
 ## Branches
 
-- `main` — cleaned baseline matching the Figma export design (light theme)
-- `v2` — improved prototype: dark theme, refined typography, animations, polish
+- `main` — cleaned baseline matching the original Figma export (multi-page, light theme)
+- `v2` — current single-page prototype
 
 ## To-dos before publishing
 
-- Replace `public/profile.svg` with a real photo (update the `src` in `src/pages/Home.tsx`)
-- Replace `contact@example.com` with the real contact email
-- Replace the lorem-ipsum thesis text on the home page (baseline branch)
-- Point the Source Code / Video Demo links on the project page at real URLs
+- Save your photo as `public/profile.jpg` (grey by default, colour on hover)
+- Replace placeholder story lines / project taglines as builds progress
 
 ## Structure
 
 ```
 src/
-  main.tsx            entry
-  app.tsx             router provider
-  routes.tsx          route table
+  main.tsx                 entry
+  app.tsx                  renders the single page
+  pages/Landing.tsx        the whole site: hero + 3 sections, snap, chrome
   components/
-    layout/RootLayout.tsx   header, footer, blueprint grid background
-    figma/ImageWithFallback.tsx
-  pages/
-    Home.tsx          hero, story timeline, thesis card, concepts, projects
-    ProjectDetail.tsx case-study layout with sticky table of contents
-  styles/
-    index.css         entry stylesheet
-    fonts.css         Google Fonts (Space Grotesk / Inter / JetBrains Mono)
-    tailwind.css      Tailwind v4 setup
-    theme.css         design tokens + base styles + blueprint-grid utility
+    ArmNav.tsx             arm-driven section nav (vertical + gantry variants)
+    RoboticArm.tsx         2-link IK arm + gantry carriage (SVG, rAF-smoothed)
+    Gear.tsx               scroll-driven gear
+  hooks/useReveal.ts       scroll-reveal hook
+  data/projects.ts         project cards
+  data/concepts.ts         notebook concept cards
+  styles/                  fonts, tailwind setup, theme tokens + utilities
 ```

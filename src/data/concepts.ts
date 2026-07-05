@@ -3,7 +3,6 @@ export interface Concept {
   title: string;
   tag: string;
   hook: string;
-  reelUrl?: string;
 }
 
 export const concepts: Concept[] = [
@@ -44,10 +43,3 @@ export const concepts: Concept[] = [
     hook: "The directions a system stretches without turning.",
   },
 ];
-
-export const notebookSections = [
-  "The intuition",
-  "The maths",
-  "Where you meet it",
-  "Common mistakes",
-] as const;
