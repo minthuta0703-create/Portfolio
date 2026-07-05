@@ -12,8 +12,8 @@ export function ConceptDetail() {
     return (
       <div className="container mx-auto px-4 md:px-6 py-24 max-w-2xl text-center">
         <p className="text-muted-foreground mb-6">Concept not found.</p>
-        <Link to="/" className="text-primary hover:underline">
-          ← Back to home
+        <Link to="/#notebook" className="text-primary hover:underline">
+          ← Back to notebook
         </Link>
       </div>
     );
@@ -22,10 +22,10 @@ export function ConceptDetail() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-16 max-w-3xl">
       <Link
-        to="/"
+        to="/#notebook"
         className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary mb-8 transition-colors"
       >
-        <ArrowLeft className="w-4 h-4" /> Back
+        <ArrowLeft className="w-4 h-4" /> Back to notebook
       </Link>
 
       <header className="mb-10 pb-8 border-b border-border">

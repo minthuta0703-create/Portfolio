@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Gear } from "../components/Gear";
 import { ArmNav } from "../components/ArmNav";
@@ -24,7 +24,14 @@ const navSections = [
   { id: "notebook", label: "Notebook" },
 ];
 
+const hashTargets: Record<string, number> = {
+  "#projects": 1,
+  "#story": 2,
+  "#notebook": 3,
+};
+
 export function Landing() {
+  const { hash } = useLocation();
   const [scrollY, setScrollY] = useState(0);
   const [vp, setVp] = useState(() => ({ h: window.innerHeight, w: window.innerWidth }));
   const [active, setActive] = useState(0); // 0 = hero, 1..3 = sections
@@ -35,6 +42,15 @@ export function Landing() {
   const projectsReveal = useReveal();
   const storyReveal = useReveal();
   const notebookReveal = useReveal();
+
+  // Coming back from a detail page: jump straight to the section the
+  // visitor left from (/#projects, /#story, /#notebook) instead of the top.
+  useLayoutEffect(() => {
+    const target = hashTargets[hash];
+    if (target != null) {
+      sectionRefs.current[target]?.scrollIntoView({ behavior: "instant", block: "start" });
+    }
+  }, [hash]);
 
   useEffect(() => {
     const measure = () => {
