@@ -2,3 +2,9 @@ node_modules
 dist
 .DS_Store
 *.local
+
+# Raw project materials and drafts stay local & private (repo is public)
+PROJECT_INBOX/*
+!PROJECT_INBOX/README.md
+drafts/*
+!drafts/README.md

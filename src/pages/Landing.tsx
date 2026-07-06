@@ -48,9 +48,18 @@ export function Landing() {
   // visitor left from (/#projects, /#story, /#notebook) instead of the top.
   useLayoutEffect(() => {
     const target = hashTargets[hash];
-    if (target != null) {
+    if (target == null) return;
+    const jump = () =>
       sectionRefs.current[target]?.scrollIntoView({ behavior: "instant", block: "start" });
-    }
+    // On full page loads the browser's async scroll restoration can fire
+    // after our jump and drag the page back up — suppress it briefly.
+    window.history.scrollRestoration = "manual";
+    jump();
+    requestAnimationFrame(jump);
+    const restore = setTimeout(() => {
+      window.history.scrollRestoration = "auto";
+    }, 500);
+    return () => clearTimeout(restore);
   }, [hash]);
 
   // Then strip the hash from the address bar (via the router, which owns
@@ -236,12 +245,12 @@ export function Landing() {
       {/* ——— 01 · PROJECTS ——— */}
       <section
         ref={setRef(1)}
-        className="min-h-screen lg:h-screen flex items-center"
+        className="min-h-screen flex items-center"
         style={{ scrollSnapAlign: "start" }}
       >
         <div
           ref={projectsReveal.ref}
-          className={`w-full max-w-5xl mx-auto px-6 md:px-10 pt-28 pb-20 lg:py-0 ${projectsReveal.className}`}
+          className={`w-full max-w-5xl mx-auto px-6 md:px-10 pt-28 pb-20 lg:py-16 ${projectsReveal.className}`}
         >
           <div className="font-mono text-[11px] tracking-[0.25em] text-primary uppercase mb-3">
             01 — Projects
@@ -294,12 +303,12 @@ export function Landing() {
       {/* ——— 02 · STORY ——— */}
       <section
         ref={setRef(2)}
-        className="min-h-screen lg:h-screen flex items-center"
+        className="min-h-screen flex items-center"
         style={{ scrollSnapAlign: "start" }}
       >
         <div
           ref={storyReveal.ref}
-          className={`w-full max-w-4xl mx-auto px-6 md:px-10 pt-28 pb-20 lg:py-0 ${storyReveal.className}`}
+          className={`w-full max-w-4xl mx-auto px-6 md:px-10 pt-28 pb-20 lg:py-16 ${storyReveal.className}`}
         >
           <div className="font-mono text-[11px] tracking-[0.25em] text-primary uppercase mb-3">
             02 — Story
@@ -325,12 +334,12 @@ export function Landing() {
       {/* ——— 03 · NOTEBOOK ——— */}
       <section
         ref={setRef(3)}
-        className="min-h-screen lg:h-screen flex items-center"
+        className="min-h-screen flex items-center"
         style={{ scrollSnapAlign: "start" }}
       >
         <div
           ref={notebookReveal.ref}
-          className={`w-full max-w-4xl mx-auto px-6 md:px-10 pt-28 pb-28 lg:py-0 ${notebookReveal.className}`}
+          className={`w-full max-w-4xl mx-auto px-6 md:px-10 pt-28 pb-28 lg:py-16 ${notebookReveal.className}`}
         >
           <div className="font-mono text-[11px] tracking-[0.25em] text-primary uppercase mb-3">
             03 — Engineering Notebook

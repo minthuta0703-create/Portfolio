@@ -1,5 +1,8 @@
 # Customizing your portfolio
 
+> **Adding a new project?** That has its own zero-code workflow now —
+> see **PUBLISHING.md**. This file covers everything else.
+
 Everything you'll ever want to change, and exactly where to change it.
 After any change: save the file, check it at http://localhost:5173 (`npm run dev`),
 then publish with the three commands at the bottom.
@@ -26,31 +29,30 @@ It shows grey and turns colour on hover automatically.
 
 ## 3. Projects
 
-`src/data/projects.ts` — each project is one block:
+**The easy way: use the publishing pipeline — see PUBLISHING.md.**
+Drop raw files in `PROJECT_INBOX/`, say "process project <name>" to Claude,
+review the draft, stage, publish. No code editing at all.
 
-```ts
+Under the hood, each project is one file in `src/content/projects/<id>.json`:
+
+```json
 {
-  id: "robotic-arm",              // becomes the URL: /projects/robotic-arm
-  title: "Robotic Arm Motion Tracking",
-  tagline: "One-line description shown on the card.",
-  status: "COMPLETED",            // COMPLETED | IN PROGRESS | PROTOTYPING
-  tags: ["Robotics", "Sensors", "Control"],
-  reelUrl: "https://www.instagram.com/reel/XXXX/",  // optional — embeds the reel
-},
+  "id": "robotic-arm",            // becomes the URL: /projects/robotic-arm
+  "order": 1,                     // position on the home grid (1 = first)
+  "title": "Robotic Arm Motion Tracking",
+  "tagline": "One-line description shown on the card.",
+  "status": "COMPLETED",          // COMPLETED | IN PROGRESS | PROTOTYPING
+  "tags": ["Robotics", "Sensors", "Control"],
+  "reelUrl": "",                  // Instagram reel URL — embeds automatically
+  "sections": {},                 // written by the pipeline
+  "images": [],
+  "files": []
+}
 ```
 
-- **Add a project:** copy a block, change every field. It appears on the home
-  page and gets its own page automatically.
-- **Remove one:** delete its block.
-- The 9 section titles on every project page live at the bottom of the same
-  file (`projectSections`).
-
-### Writing the actual build-log content
-
-`src/pages/ProjectDetail.tsx` — find the `<AccordionItem>` block. Right now every
-section shows the same placeholder paragraph. To write real per-project content,
-replace the placeholder `<p>` with your text, or ask Claude to wire up
-per-project content in the data file when you have your first write-up ready.
+Adding/removing a JSON file adds/removes the project everywhere — no other
+code changes needed. The 9 section titles live in `src/data/projects.ts`
+(`projectSections`).
 
 ## 4. Story chapters
 

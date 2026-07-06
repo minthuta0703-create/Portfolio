@@ -1,0 +1,13 @@
+{
+  "id": "audio-dsp",
+  "order": 2,
+  "title": "Audio DSP / ANC System",
+  "tagline": "Real-time signal processing for active noise cancellation.",
+  "status": "IN PROGRESS",
+  "tags": ["DSP", "Audio", "MATLAB"],
+  "date": "",
+  "reelUrl": "",
+  "sections": {},
+  "images": [],
+  "files": []
+}

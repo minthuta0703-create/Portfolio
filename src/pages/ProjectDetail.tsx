@@ -1,12 +1,12 @@
 import { Link, useParams } from "react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { Accordion, AccordionItem } from "../components/Accordion";
 import { InstagramEmbed } from "../components/InstagramEmbed";
-import { projects, projectSections, statusStyles } from "../data/projects";
+import { projectContents, projectSections, statusStyles } from "../data/projects";
 
 export function ProjectDetail() {
   const { id } = useParams();
-  const project = projects.find((p) => p.id === id);
+  const project = projectContents.find((p) => p.id === id);
 
   if (!project) {
     return (
@@ -42,26 +42,81 @@ export function ProjectDetail() {
         </div>
         <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">{project.title}</h1>
         <p className="text-lg text-muted-foreground leading-relaxed">{project.tagline}</p>
+        {project.date && (
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground mt-4">
+            {project.date}
+          </p>
+        )}
       </header>
 
       <div className="mb-10">
-        <InstagramEmbed url={project.reelUrl} caption={`Build reel for ${project.title} — coming soon.`} />
+        <InstagramEmbed
+          url={project.reelUrl}
+          caption={`Build reel for ${project.title} — coming soon.`}
+        />
       </div>
 
+      {project.images.length > 0 && (
+        <div className="mb-10 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {project.images.map((img, i) => (
+            <figure key={img.src} className="border border-border bg-card p-1.5">
+              <img
+                src={img.src}
+                alt={img.caption || project.title}
+                loading="lazy"
+                className="w-full aspect-[4/3] object-cover"
+              />
+              <figcaption className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground px-1 pt-1.5 pb-0.5">
+                FIG. {String(i + 2).padStart(2, "0")}
+                {img.caption ? ` — ${img.caption}` : ""}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      )}
+
       <Accordion>
-        {projectSections.map((title, i) => (
-          <AccordionItem
-            key={title}
-            title={title}
-            label={String(i + 1).padStart(2, "0")}
-            defaultOpen={i === 0}
-          >
-            <p>
-              Placeholder for <em>{title}</em>. Replace with the real write-up when the build log is
-              ready — a few short paragraphs, links, or an image is enough.
-            </p>
-          </AccordionItem>
-        ))}
+        {projectSections.map((title, i) => {
+          const paras = project.sections[title] ?? [];
+          const isFiles = title === "Project Files";
+          const files = isFiles ? project.files : [];
+          const hasContent = paras.length > 0 || files.length > 0;
+          return (
+            <AccordionItem
+              key={title}
+              title={title}
+              label={String(i + 1).padStart(2, "0")}
+              defaultOpen={i === 0}
+            >
+              {paras.map((p, j) => (
+                <p key={j} className={j > 0 ? "mt-3" : ""}>
+                  {p}
+                </p>
+              ))}
+              {files.length > 0 && (
+                <ul className={`flex flex-col gap-2 ${paras.length > 0 ? "mt-4" : ""}`}>
+                  {files.map((f) => (
+                    <li key={f.href}>
+                      <a
+                        href={f.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-primary hover:underline underline-offset-4"
+                      >
+                        <Download className="w-3.5 h-3.5" /> {f.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {!hasContent && (
+                <p>
+                  Placeholder for <em>{title}</em> — the write-up for this build is on its way.
+                </p>
+              )}
+            </AccordionItem>
+          );
+        })}
       </Accordion>
     </div>
   );

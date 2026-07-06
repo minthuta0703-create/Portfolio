@@ -1,0 +1,13 @@
+{
+  "id": "robotic-arm",
+  "order": 1,
+  "title": "Robotic Arm Motion Tracking",
+  "tagline": "Translating human movement into robotic response.",
+  "status": "COMPLETED",
+  "tags": ["Robotics", "Sensors", "Control"],
+  "date": "",
+  "reelUrl": "",
+  "sections": {},
+  "images": [],
+  "files": []
+}

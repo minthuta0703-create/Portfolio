@@ -1,0 +1,13 @@
+{
+  "id": "robotic-hand",
+  "order": 3,
+  "title": "Mechatronic Hand Build",
+  "tagline": "Mechanical motion controlled through custom electronics.",
+  "status": "PROTOTYPING",
+  "tags": ["Mechanical", "Arduino", "Python"],
+  "date": "",
+  "reelUrl": "",
+  "sections": {},
+  "images": [],
+  "files": []
+}
